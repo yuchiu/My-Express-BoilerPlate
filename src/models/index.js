@@ -1,3 +1,5 @@
-import UserModel from "./user.model";
+import User from "./User";
 
-export { UserModel };
+export default {
+  User
+};

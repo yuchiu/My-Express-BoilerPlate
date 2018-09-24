@@ -1,28 +1,24 @@
 import express from "express";
 
-import { userController } from "../controllers";
+import { authController, userController } from "../controllers";
 import { authPolicy } from "../policies";
 
 export default app => {
-  /* apiRoutes */
-  const apiRoutes = express.Router();
-  const userRoutes = express.Router();
+  /* api */
+  const apiv1 = express.Router();
+  const user = express.Router();
+  const auth = express.Router();
 
-  /* append apiRoutes to app */
+  /* routes to api v1 routes  */
+  app.use("/api/v1", apiv1);
+  apiv1.use("/auths", auth);
+  apiv1.use("/users", user);
 
-  app.use("/api/v1", apiRoutes);
+  /* auth routes */
+  auth.get("/", authPolicy.authentication, authController.AutoLogin);
+  auth.post("/", authPolicy.registerRule, authController.create);
+  auth.post("/:username", authController.login);
 
-  /* append user routes to api routes */
-  apiRoutes.use("/users", userRoutes);
-
-  userRoutes.get("/:username", userController.getUser);
-  userRoutes.get(
-    "/auth",
-    authPolicy.bearerTokenAuth,
-    userController.bearerTokenAuthUser
-  );
-  userRoutes.post("/", authPolicy.registerRule, userController.createUser);
-  userRoutes.post("/:username", userController.loginUser);
-  userRoutes.put("/:username", userController.updateUser);
-  userRoutes.delete("/:username", userController.deleteUser);
+  /* user routes */
+  user.get("/:username", userController.get);
 };

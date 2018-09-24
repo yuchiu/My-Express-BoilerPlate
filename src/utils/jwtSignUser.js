@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 
-import config from "../../config";
+import config from "../config";
 
 export default user => {
   try {
     const userJson = user.toJSON();
     const ONE_WEEK = 60 * 60 * 24 * 7;
-    return jwt.sign(userJson, config.JWT_SECRET, {
+    return jwt.sign(userJson, config.KEY.JWT_SECRET, {
       expiresIn: ONE_WEEK
     });
   } catch (err) {
